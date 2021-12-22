@@ -14,6 +14,8 @@ function NavBar(props) {
                 <Link to='/' onClick={() => props.logout()}>Logout</Link>
                 <Link to='/profile'>Profile</Link>
                 <Link to='/messages'>Messages</Link>
+                {props.user.role === 'owner' && 
+                <Link to='/business'>My Business</Link>}
             </div>
             }
             <Link to='/'>Home</Link>
