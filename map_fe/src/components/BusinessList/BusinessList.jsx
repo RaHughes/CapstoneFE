@@ -8,10 +8,10 @@ function BusinessList(props) {
                 return (
                      <div key={Math.random()}>
                         <h2>{business.title}</h2>
-                        {/* <h3>Owner: {owner[0].first_name} {owner[0].last_name}</h3>  */}
                         <h3>Description: {business.description}</h3>
                         <h3>Phone Number: {business.phone_number}</h3>
                         <h3>Email: {business.email}</h3>
+                        <Link to='/detail' >Learn More</Link>
                     </div> 
                 )
             }) : <p>loading</p>}

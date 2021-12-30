@@ -10,6 +10,7 @@ import Profile from './Profile/Profile';
 import MessageList from './MessageList/MessageList';
 import BusinessForm from './BusinessForm/BusinessForm';
 import NewBusiness from './NewBusiness/NewBusiness';
+import BusinessDetail from './BusinessDetail/BusinessDetail';
 
 class App extends Component{
     constructor(props){
@@ -18,7 +19,8 @@ class App extends Component{
             business: [],
             user: '',
             users: [],
-            messages: []
+            messages: [],
+            bd: ''
         }
     }
 
@@ -61,9 +63,8 @@ class App extends Component{
             method: 'GET',
             url: 'http://127.0.0.1:8000/api/auth/message/'
         })
-        let userMessages = response.data.filter(message => message.to_userId === this.state.user.id || message.from_userId === this.state.user.id)
         this.setState({
-            messages: userMessages
+            messages: response.data
         })
     }
 
@@ -76,6 +77,7 @@ class App extends Component{
     }
 
     registerUser = async user => {
+        console.log(user)
         await axios({
             method: 'POST',
             url: 'http://127.0.0.1:8000/api/auth/register/',
@@ -133,18 +135,40 @@ class App extends Component{
         window.location = '/'
     }
 
+    sendMessage = async message => {
+        await axios({
+            method: 'POST',
+            url: 'http://127.0.0.1:8000/api/auth/message/',
+            data: {
+                "to_userId": parseInt(message.to_userId),
+                "from_userId": parseInt(message.from_userId),
+                "message": message.message
+            }
+        })
+        this.getMessages()
+    }
+
+    setDetail = (b) => {
+        console.log(b)
+        this.setState({
+            bd: b
+        })
+        window.location = '/detail'
+    }
+
     render(){
         return(
             <div>
                 <NavBar user={this.state.user} logout={this.logout}/>
                 <Routes>
-                    <Route path='/' exact element={<BusinessList business={this.state.business} users={this.state.users}/>} />
+                    <Route path='/' exact element={<BusinessList business={this.state.business} users={this.state.users} setDetail={this.setDetail}/>} />
                     <Route path='/login' element={<LogInForm user={this.state.user} />} />
                     <Route path='/register' element={<RegisterUser registerUser={this.registerUser}/>} />
-                    <Route path='/profile' element={<Profile />} />
-                    <Route path='/messages' element={<MessageList messages={this.state.messages} user={this.state.user} users={this.state.users}/>} />
+                    <Route path='/profile' element={<Profile user={this.state.user}/>} />
+                    <Route path='/messages' element={<MessageList messages={this.state.messages} user={this.state.user} users={this.state.users} sendMessage={this.sendMessage} />} />
                     <Route path='/business' element={<BusinessForm user={this.state.user} business={this.state.business} editBusiness={this.editBusiness} deleteBusiness={this.deleteBusiness}/>} />
                     <Route path='/new_business' element={<NewBusiness addBusiness={this.addBusiness} user={this.state.user}/>} />
+                    <Route path='/detail' element={<BusinessDetail business={this.state.bd} />} />
                 </Routes>
             </div>
         )
