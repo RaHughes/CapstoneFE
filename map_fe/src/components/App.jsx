@@ -11,12 +11,14 @@ import MessageList from './MessageList/MessageList';
 import BusinessForm from './BusinessForm/BusinessForm';
 import NewBusiness from './NewBusiness/NewBusiness';
 import BusinessDetail from './BusinessDetail/BusinessDetail';
+import apiKey from './key';
 
 class App extends Component{
     constructor(props){
         super(props);
         this.state = {
             business: [],
+            userBusiness: '',
             user: '',
             users: [],
             messages: [],
@@ -53,8 +55,15 @@ class App extends Component{
             method: 'GET',
             url: 'http://127.0.0.1:8000/api/auth/business/'
         })
+        let userBusiness = ''
+        response.data.forEach(b => {
+            if(b.ownerId === this.state.user.id) {
+                userBusiness = b
+            }
+        })
         this.setState({
-            business: response.data
+            business: response.data,
+            userBusiness: userBusiness
         })
     }
 
@@ -94,6 +103,20 @@ class App extends Component{
         window.location = '/'
     };
 
+    editUser = async user => {
+        await axios({
+            method: 'PATCH',
+            url: `http://127.0.0.1:8000/api/auth/user/${user.id}`,
+            data: {
+                "first_name": user.first_name,
+                "middle_name": user.middle_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "role": user.role
+            }
+        })
+    }
+
     editBusiness = async business => {
         console.log(business)
         await axios({
@@ -108,7 +131,6 @@ class App extends Component{
                 "email": business.email
             },
         });
-        window.location = '/'
     }
 
     deleteBusiness = async business => {
@@ -148,12 +170,34 @@ class App extends Component{
         this.getMessages()
     }
 
+    getReviews = async(business) => {
+        let queryUrl = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search/phone?phone=${business.phone_number}`
+        let response = await axios({
+            method: 'GET',
+            url: queryUrl,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+                "Authorization": `Bearer ${apiKey}`
+            }
+        })
+        let bId = response.data.businesses[0].id
+        let queryUrl2 = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/${bId}/reviews`
+        let reviews = await axios({
+            method: 'GET',
+            url: queryUrl2,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+                "Authorization": `Bearer ${apiKey}` 
+            }
+        })
+        return reviews.data.reviews
+    }
+
     setDetail = (b) => {
         console.log(b)
         this.setState({
             bd: b
         })
-        window.location = '/detail'
     }
 
     render(){
@@ -164,11 +208,11 @@ class App extends Component{
                     <Route path='/' exact element={<BusinessList business={this.state.business} users={this.state.users} setDetail={this.setDetail}/>} />
                     <Route path='/login' element={<LogInForm user={this.state.user} />} />
                     <Route path='/register' element={<RegisterUser registerUser={this.registerUser}/>} />
-                    <Route path='/profile' element={<Profile user={this.state.user}/>} />
+                    <Route path='/profile' element={<Profile user={this.state.user} editUser={this.editUser}/>} />
                     <Route path='/messages' element={<MessageList messages={this.state.messages} user={this.state.user} users={this.state.users} sendMessage={this.sendMessage} />} />
-                    <Route path='/business' element={<BusinessForm user={this.state.user} business={this.state.business} editBusiness={this.editBusiness} deleteBusiness={this.deleteBusiness}/>} />
+                    <Route path='/business' element={<BusinessForm user={this.state.user} business={this.state.userBusiness} editBusiness={this.editBusiness} deleteBusiness={this.deleteBusiness}/>} />
                     <Route path='/new_business' element={<NewBusiness addBusiness={this.addBusiness} user={this.state.user}/>} />
-                    <Route path='/detail' element={<BusinessDetail business={this.state.bd} />} />
+                    <Route path='/detail' element={<BusinessDetail business={this.state.bd} getReviews={this.getReviews}/>} />
                 </Routes>
             </div>
         )

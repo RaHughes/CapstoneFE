@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
+import './MessageList.css'
 
 class MessageList extends Component {
     constructor(props) {
@@ -44,38 +45,38 @@ class MessageList extends Component {
 
     render() {
     let toUser = this.props.messages.filter(m => m.to_userId === this.props.user.id)
-    console.log(toUser)
     let fromUser = this.props.messages.filter(m => m.from_userId === this.props.user.id)
-    console.log(fromUser)
         return(
-            <div>
-            <button onClick={this.toggle_on}>New Message</button>
+            <div className='messageList'>
+            <button className='btn btn-primary' onClick={this.toggle_on}>New Message</button>
             {this.state.show_modal === true && 
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit} className='newMsg'>
+                    <div className='form-group'>
+                    <label>To: </label>
                     <select onChange={this.handleChange} name='to_userId'>
                         {this.props.users.map(u => {
                             return <option key={Math.random()} value={u.id}>{u.first_name} {u.last_name}</option>
                         })}
                     </select>
-                    <input onChange={this.handleChange} name='message' value={this.state.message} />
-                    <button type='submit'>Send</button>
+                    </div>
+                    <textarea rows='5' cols='60' className='msginput' onChange={this.handleChange} name='message' value={this.state.message} />
+                    <button type='submit' className='btn btn-primary msgbtn'>Send</button>
                 </form>}
             <h3>Inbox</h3>
             {toUser.map(m => {
                 let from = this.props.users.filter(u => u.id === m.from_userId)
-                    return <div key={Math.random()}>
+                    return <div className='message' key={Math.random()}>
                         <p>From: {from[0].first_name} {from[0].last_name}</p>
                         <p>Message: {m.message}</p>
-                        <button>Reply</button>
                     </div>
                 })}
             <h3>Outbox</h3>
             {fromUser.map(m => {
                 let to = this.props.users.filter(u => u.id === m.to_userId)
-                    return <div key={Math.random()}>
+                    return <div className='message' key={Math.random()}>
                         <p>To: {to[0].first_name} {to[0].last_name}</p>
                         <p>Message: {m.message}</p>
-                        <button>Delete</button>
+                        <button className='btn btn-primary msgbtn'>Delete</button>
                     </div>
                 })}
             </div>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './NewBusiness.css'
 
 class NewBusiness extends Component {
     constructor(props) {
@@ -33,17 +34,27 @@ class NewBusiness extends Component {
     }
 
     render() { 
-        return ( <form onSubmit={this.handleSubmit}>
+        return ( <form onSubmit={this.handleSubmit} className='nbf'>
+            <div className='form-group'>
             <label>Title: </label>
             <input value={this.state.title} onChange={this.handleChange} name='title'></input>
+            </div>
+            <div className='form-group'>
             <label>Description: </label>
             <input value={this.state.description} onChange={this.handleChange} name='description'></input>
+            </div>
+            <div className='form-group'>
             <label>Phone Number: </label>
             <input value={this.state.phone_number} onChange={this.handleChange} name='phone_number'></input>
+            </div>
+            <div className='form-group'>
             <label>Address: </label>
             <input value={this.state.address} onChange={this.handleChange} name='address'></input>
+            </div>
+            <div className='form-group'>
             <label>Email: </label>
             <input value={this.state.email} onChange={this.handleChange} name='email'></input>
+            </div>
             <button type='submit'>Add Business</button>
         </form> );
     }

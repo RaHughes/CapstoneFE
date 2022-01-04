@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
+import './RegisterUser.css'
 
 class RegisterUser extends Component {
     constructor(props) {
@@ -37,24 +38,39 @@ class RegisterUser extends Component {
 
     render() { 
         return ( <div>
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} className='registerForm'>
+                <div className='form-group'>
                 <label>Username: </label>
                 <input onChange={this.handleChange} name='username'/>
+                </div>
+                <div className='form-group'>
                 <label>Password: </label>
                 <input onChange={this.handleChange} name='password'/>
+                </div>
+                <div className='form-group'>
+                <label>Role: </label>
                 <select onChange={this.handleChange} name='role'>
                     <option value='customer'>Customer</option>
                     <option value='owner'>Owner</option>
                 </select>
+                </div>
+                <div className='form-group'>
                 <label>First Name: </label>
                 <input onChange={this.handleChange} name='first_name'/>
+                </div>
+                <div className='form-group'>
                 <label>Last Name: </label>
                 <input onChange={this.handleChange} name='last_name'/>
+                </div>
+                <div className='form-group'>
                 <label>Middle Name: </label>
                 <input onChange={this.handleChange} name='middle_name'/>
+                </div>
+                <div className='form-group'>
                 <label>Email: </label>
                 <input onChange={this.handleChange} name='email'/>
-                <button type='submit'>Register</button>
+                </div>
+                <button className='btn btn-primary' type='submit'>Register</button>
             </form>
         </div> );
     }

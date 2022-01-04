@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import './BusinessForm.css'
 
 
 class BusinessForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            userBusiness: {},
-            title: '',
-            ownerId: '',
-            description: '',
-            phone_number: '',
-            address: '',
-            email: '',
+            title: this.props.business.title,
+            ownerId: this.props.business.ownerId,
+            description: this.props.business.description,
+            phone_number: this.props.business.phone_number,
+            address: this.props.business.address,
+            email: this.props.business.email,
             edit: false
          }
     }
 
-    toggleFormOn = (b) => {
+    toggleFormOn = () => {
         this.setState({
-            userBusiness: b,
             edit: true
         });
     };
@@ -39,9 +38,9 @@ class BusinessForm extends Component {
     handleSubmit = async(event) => {
         event.preventDefault()
         let patch = {
-            id: parseInt(this.state.userBusiness.id),
+            id: parseInt(this.props.business.id),
             title: this.state.title,
-            ownerId: parseInt(this.props.user.id),
+            ownerId: parseInt(this.state.ownerId),
             description: this.state.description,
             phone_number: this.state.phone_number,
             address: this.state.address,
@@ -49,36 +48,44 @@ class BusinessForm extends Component {
         }
         this.props.editBusiness(patch)
         this.toggleFormOff()
+        window.location = '/business'
     }
     
 
     render() { 
         return ( <div>
-            <Link to='/new_business'>Add New Business</Link>
-            {this.props.business.map(b => {
-                if(b.ownerId === this.props.user.id) {
-                    return <div key={Math.random()}>
-                        <h2>{b.title}</h2>
-                        <h3>Description: {b.description}</h3>
-                        <h3>Phone Number: {b.phone_number}</h3>
-                        <h3>Email: {b.email}</h3>
-                        <button onClick={() => this.toggleFormOn(b)}>Edit</button>
-                        <button onClick={() => this.props.deleteBusiness(b)}>Delete</button>
-                    </div>
-                }
-            })}
-            {this.state.edit === true && <form onSubmit={this.handleSubmit}>
+            <Link className='btn btn-primary' to='/new_business'>Add New Business</Link>
+            {this.state.edit === false &&
+            <div key={Math.random()} className='business'>
+                <h2>{this.props.business.title}</h2>
+                <h3>Description: {this.props.business.description}</h3>
+                <h3>Phone Number: {this.props.business.phone_number}</h3>
+                <h3>Email: {this.props.business.email}</h3>
+                <button className='btn btn-primary' onClick={() => this.toggleFormOn()}>Edit</button>
+                <button className='btn btn-primary' onClick={() => this.props.deleteBusiness()}>Delete</button>
+            </div>}
+            {this.state.edit === true && <form onSubmit={this.handleSubmit} className='business'>
+                <div className='form-group'>
                 <label>Title: </label>
-                <input defaultValue={this.state.userBusiness.title} onChange={this.handleChange} name='title'></input>
+                <input value={this.state.title} onChange={this.handleChange} name='title'></input>
+                </div>
+                <div className='form-group'>
                 <label>Description: </label>
-                <input defaultValue={this.state.userBusiness.description} onChange={this.handleChange} name='description'></input>
+                <input value={this.state.description} onChange={this.handleChange} name='description'></input>
+                </div>
+                <div className='form-group'>
                 <label>Phone Number: </label>
-                <input defaultValue={this.state.userBusiness.phone_number} onChange={this.handleChange} name='phone_number'></input>
+                <input value={this.state.phone_number} onChange={this.handleChange} name='phone_number'></input>
+                </div>
+                <div className='form-group'>
                 <label>Address: </label>
-                <input defaultValue={this.state.userBusiness.address} onChange={this.handleChange} name='address'></input>
+                <input value={this.state.address} onChange={this.handleChange} name='address'></input>
+                </div>
+                <div className='form-group'>
                 <label>Email: </label>
-                <input defaultValue={this.state.userBusiness.email} onChange={this.handleChange} name='email'></input>
-                <button type='submit'>Submit</button>
+                <input value={this.state.email} onChange={this.handleChange} name='email'></input>
+                </div>
+                <button type='submit' className='btn btn-primary'>Submit</button>
                 </form>}
         </div> );
     }
