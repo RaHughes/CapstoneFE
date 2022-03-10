@@ -62,7 +62,7 @@ class BusinessForm extends Component {
                 <h3>Phone Number: {this.props.business.phone_number}</h3>
                 <h3>Email: {this.props.business.email}</h3>
                 <button className='btn btn-primary' onClick={() => this.toggleFormOn()}>Edit</button>
-                <button className='btn btn-primary' onClick={() => this.props.deleteBusiness()}>Delete</button>
+                <button className='btn btn-primary' onClick={() => this.props.deleteBusiness(this.props.business)}>Delete</button>
             </div>}
             {this.state.edit === true && <form onSubmit={this.handleSubmit} className='business'>
                 <div className='form-group'>
