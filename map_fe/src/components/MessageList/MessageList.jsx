@@ -26,6 +26,7 @@ class MessageList extends Component {
     }
 
     handleChange = event => {
+        console.log(event.target.value)
         this.setState({
           [event.target.name]: event.target.value,
         });
@@ -53,7 +54,7 @@ class MessageList extends Component {
                 <form onSubmit={this.handleSubmit} className='newMsg'>
                     <div className='form-group'>
                     <label>To: </label>
-                    <select onChange={this.handleChange} name='to_userId'>
+                    <select onChange={this.handleChange} name='to_userId' value={this.state.to_userId}>
                         {this.props.users.map(u => {
                             return <option key={Math.random()} value={u.id}>{u.first_name} {u.last_name}</option>
                         })}
