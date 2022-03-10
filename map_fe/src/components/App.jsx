@@ -27,7 +27,6 @@ class App extends Component{
     }
 
      componentDidMount(){
-        this.getBusiness()
         const jwt = localStorage.getItem('access');
         try {
             this.getUser(jwt);
@@ -35,6 +34,7 @@ class App extends Component{
             console.log('Something went wrong')
         }
         this.getMessages()
+        this.getBusiness()
     }
 
     async getUser(token) {
@@ -48,6 +48,7 @@ class App extends Component{
             user: loginUser[0],
             users: users.data
         })
+        this.getBusiness()
     }
 
     async getBusiness() {
@@ -61,6 +62,7 @@ class App extends Component{
                 userBusiness = b
             }
         })
+        console.log(userBusiness)
         this.setState({
             business: response.data,
             userBusiness: userBusiness
@@ -171,23 +173,24 @@ class App extends Component{
     }
 
     getReviews = async(business) => {
-        let queryUrl = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search/phone?phone=${business.phone_number}`
+        console.log(business.phone_number)
+        let queryUrl = `https://api.yelp.com/v3/businesses/search/phone?phone=${business.phone_number}`
         let response = await axios({
             method: 'GET',
-            url: queryUrl,
+            url:queryUrl,
             headers: {
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-                "Authorization": `Bearer ${apiKey}`
+                "Authorization": "Bearer kkFQoyYBkZW3fSPax7TatfBAPv2-B6WEtBYxevrYmb8gA04KpBeu4x8KsXixOyrSUdxM1kbhCg6MI-O2qTYxUG2QiMGV_ayiaAgkaqquHznf3_zFjAiodwcpVeu4YXYx",
+                "Access-Control-Allow-Origin": "*"
             }
         })
         let bId = response.data.businesses[0].id
-        let queryUrl2 = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/${bId}/reviews`
+        let queryUrl2 = `https://api.yelp.com/v3/businesses/${bId}/reviews/`
         let reviews = await axios({
             method: 'GET',
             url: queryUrl2,
             headers: {
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-                "Authorization": `Bearer ${apiKey}` 
+                "Authorization": "Bearer kkFQoyYBkZW3fSPax7TatfBAPv2-B6WEtBYxevrYmb8gA04KpBeu4x8KsXixOyrSUdxM1kbhCg6MI-O2qTYxUG2QiMGV_ayiaAgkaqquHznf3_zFjAiodwcpVeu4YXYx",
+                "Access-Control-Allow-Origin": "*" 
             }
         })
         return reviews.data.reviews
